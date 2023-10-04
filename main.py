@@ -1,4 +1,4 @@
-def print_instruction():
-    print("| 0 | 1 | 2 |\n| 3 | 4 | 5 |\n| 6 | 7 | 8 |\n")
+import game
 
-print_instruction()
+new_game = game.Game()
+new_game.game_loop()

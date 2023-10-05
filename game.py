@@ -1,4 +1,6 @@
-import random
+from player import HumanPlayer, RandomPlayer
+import os
+import time
 
 class Game:
     def __init__(self) -> None:
@@ -9,25 +11,25 @@ class Game:
         for i in range(0, 7, 3):
             print(f"| {self.board[i]} | {self.board[i+1]} | {self.board[i+2]} |\n")
 
-    def get_board(self) -> None:
+    def print_instruction(self) -> None:
+        print("Grid numbering: ")
+        for i in range(0, 7, 3):
+            print(f"| {i} | {i+1} | {i+2} |\n")
+
+    def get_board(self) -> list[str]:
         return self.board
     
-    def choose_player(self, your_player="X"):
-        self.your_player = input("What is your player? (X or O) ")
-        self.enemy_player = "O" if self.your_player == "X" else "X"
-
-    def mark(self, player: str, position: int) -> bool:
-        if self.board[position] == " ":
-            self.board[position] = player
-            return True
-        else:
-            return False
+    def choose_player(self):
+        self.your_player = HumanPlayer(input("What is your player? (X or O) "))
+        self.enemy_player = RandomPlayer("O" if self.your_player.marker == "X" else "X")
 
     def is_winner(self) -> str:
         if self.board[0] is self.board[4] is self.board[8] and " " not in {self.board[0], self.board[4], self.board[8]}:
             return self.board[4]
+        
         elif self.board[2] is self.board[4] is self.board[6] and " " not in {self.board[2], self.board[4], self.board[6]}:
             return self.board[4]
+        
         for i in range(0, 7, 3):
             if self.board[i] is self.board[i+1] is self.board[i+2] and " " not in {self.board[i], self.board[i+1], self.board[i+2]}:
                 return self.board[i]
@@ -37,20 +39,21 @@ class Game:
     
     def game_loop(self) -> None:
         print("Welcome to the game!")
+        self.print_instruction()
         current_player = "X"
-
+        time.sleep(3)
+        os.system("clear")
         while self.is_winner() == " " and " " in self.board:
-            if current_player is self.your_player:
-                while True:
-                    pos = int(input("Your position? "))
-                    if self.mark(current_player, pos):
-                        break
-            else:
-                while True:
-                    pos = random.randint(0,8)
-                    if self.mark(current_player, pos):
-                        break
-            current_player = "X" if current_player == "O" else "O"
             self.print_board()
-            
-        print(f"AAAND THE WINNER ISSSSS: {self.is_winner()}")
+            if current_player is self.your_player.marker:
+                self.your_player.mark(self.get_board())
+            else:
+                time.sleep(1)
+                self.enemy_player.mark(self.get_board())
+            current_player = "X" if current_player == "O" else "O"
+            os.system("clear")
+        self.print_board()
+        if self.is_winner() == " " and " " not in self.board:
+            print("Tie...")
+        else:
+            print(f"AAAND THE WINNER IS: {self.is_winner()}")       

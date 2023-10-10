@@ -1,4 +1,4 @@
-from player import HumanPlayer, RandomPlayer
+from player import HumanPlayer, RandomPlayer, MinMaxPlayer
 import os
 import time
 
@@ -20,7 +20,7 @@ class Game:
         return self.board
     
     def choose_player(self):
-        self.your_player = HumanPlayer(input("What is your player? (X or O) "))
+        self.your_player = MinMaxPlayer("X")
         self.enemy_player = RandomPlayer("O" if self.your_player.marker == "X" else "X")
 
     def is_winner(self) -> str:
@@ -33,27 +33,31 @@ class Game:
         for i in range(0, 7, 3):
             if self.board[i] is self.board[i+1] is self.board[i+2] and " " not in {self.board[i], self.board[i+1], self.board[i+2]}:
                 return self.board[i]
+            
             if self.board[(i//3)] is self.board[(i//3)+3] is self.board[(i//3)+6] and " " not in {self.board[(i//3)], self.board[(i//3)+3], self.board[(i//3)+6]}:
                 return self.board[i//3]
+            
+        if " " not in self.board:
+            return "Tie"
         return " "
     
     def game_loop(self) -> None:
         print("Welcome to the game!")
         self.print_instruction()
         current_player = "X"
-        time.sleep(3)
+        #time.sleep(3)
         os.system("clear")
         while self.is_winner() == " " and " " in self.board:
             self.print_board()
             if current_player is self.your_player.marker:
                 self.your_player.mark(self.get_board())
             else:
-                time.sleep(1)
+                #time.sleep(1)
                 self.enemy_player.mark(self.get_board())
             current_player = "X" if current_player == "O" else "O"
             os.system("clear")
         self.print_board()
-        if self.is_winner() == " " and " " not in self.board:
+        if self.is_winner() == "Tie":
             print("Tie...")
         else:
             print(f"AAAND THE WINNER IS: {self.is_winner()}")       

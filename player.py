@@ -68,11 +68,11 @@ class MinMaxPlayer(Player):
     def min_max(self, board: list[str], isMaximazing: bool, depth: int) -> int:
         enemy = "X" if self.marker == "O" else "O"
         if self.is_winner(board) == self.marker:
-            return 1#/depth
+            return 1/depth
         elif self.is_winner(board) == "Tie":
             return 0
-        elif self.is_winner(board) == enemy: #"X" if self.marker == "O" else "O":
-            return -1 #/depth
+        elif self.is_winner(board) == enemy: 
+            return -1/depth
         
         if isMaximazing:
             best = -math.inf
@@ -86,7 +86,7 @@ class MinMaxPlayer(Player):
             worst = math.inf
             for pos in range(0, 9):
                 if board[pos] == " ":
-                    board[pos] = enemy #"X" if self.marker == "O" else "O"
+                    board[pos] = enemy
                     worst = min(worst, self.min_max(board, not isMaximazing, depth+1))
                     board[pos] = " "
             return worst
